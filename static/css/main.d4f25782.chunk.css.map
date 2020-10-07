@@ -1,0 +1,1 @@
+{"version":3,"sources":["App.css"],"names":[],"mappings":"AAAA,KACE,kBAAmB,CACnB,+BACF,CAEA,KACE,iBACF","file":"main.d4f25782.chunk.css","sourcesContent":["body {\n  background: #31cc46;\n  font-family: \"Nunito\", sans-serif;\n}\n\n.App {\n  text-align: center;\n}"]}
