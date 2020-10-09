@@ -2,6 +2,8 @@ import React, { useState, useEffect } from "react";
 import config from "../config";
 import Card from "./Card";
 import Timer from "./Timer"
+// This thing is from https://www.npmjs.com/package/react-longpressable. I CAN USE LIBRARY YO
+// import LongPressable from 'react-longpressable';
 
 const Board = () => {
 

@@ -3,16 +3,15 @@ import React, { useState } from "react";
 import LongPressable from 'react-longpressable';
 
 export default function Card({ data, updateBoard, flagCard, incrementMoveCount, incrementFlagCount, decrementFlagCount }) {
+  const [timerID , settimerID ] = useState(true);
+  const [isLongPressing , setIsLongPressing] = useState(false);
+
 
   // I stole random_rgba function from https://stackoverflow.com/questions/23095637/how-do-you-get-random-rgb-in-javascript
   function random_rgba() {
     var o = Math.round, r = Math.random, s = 255;
     return 'rgba(' + o(r() * s) + ',' + o(r() * s) + ',' + o(r() * s) + ',' + r().toFixed(1) + ')';
   }
-
-  const onLongPress = (e) => {
-    rightClicking(e)
-  };
 
   const unreavledBackgroundColor = (data) => {
     if ((data.x + data.y) % 2 === 0) {
@@ -76,15 +75,46 @@ export default function Card({ data, updateBoard, flagCard, incrementMoveCount, 
     return '';
   }
 
+  const longPressPointerUp = (e) => {
+    if (e.pointerType === 'mouse') {
+      return
+    }
+    if(timerID && isLongPressing)
+    {
+      setIsLongPressing(false);
+      settimerID(false);
+      clearTimeout();
+    }
+    console.log('longPressPointerUp');
+  }
+
+  const longPressPointerDown = (e) => {
+    if (e.pointerType === 'mouse') {
+      return
+    }
+    console.log('longPressPointerDown');
+    setIsLongPressing(true);
+    setTimeout(() => {
+      settimerID(true);
+      console.log('lol');
+    }, 750)
+  }
+
+  const longPressPointerMove = (e) => {
+    console.log('longPressPointerMove');
+  }
+
+  const longPressPointerLeave = (e) => {
+    console.log('longPressPointerLeave');
+  }
+
   return (
     <div className="Card unselectable" style={style}
       onClick={(e) => leftClicking(e)}
       onContextMenu={(e) => rightClicking(e)}
+      onPointerUp={(e) => longPressPointerUp(e)}
+      onPointerDown={(e) => longPressPointerDown(e)}
     >
-      {<LongPressable
-        onLongPress={onLongPress}
-        longPressTime={700}>
-      </LongPressable>}
       {cardContent(data)}
     </div>
   );
