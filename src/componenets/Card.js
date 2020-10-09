@@ -1,11 +1,18 @@
-import React from "react";
+import React, { useState } from "react";
+// This thing is from https://www.npmjs.com/package/react-longpressable. I CAN USE LIBRARY YO
+import LongPressable from 'react-longpressable';
 
 export default function Card({ data, updateBoard, flagCard, incrementMoveCount, incrementFlagCount, decrementFlagCount }) {
+
   // I stole random_rgba function from https://stackoverflow.com/questions/23095637/how-do-you-get-random-rgb-in-javascript
   function random_rgba() {
     var o = Math.round, r = Math.random, s = 255;
     return 'rgba(' + o(r() * s) + ',' + o(r() * s) + ',' + o(r() * s) + ',' + r().toFixed(1) + ')';
   }
+
+  const onLongPress = (e) => {
+    rightClicking(e)
+  };
 
   const unreavledBackgroundColor = (data) => {
     if ((data.x + data.y) % 2 === 0) {
@@ -74,6 +81,10 @@ export default function Card({ data, updateBoard, flagCard, incrementMoveCount, 
       onClick={(e) => leftClicking(e)}
       onContextMenu={(e) => rightClicking(e)}
     >
+      {<LongPressable
+        onLongPress={onLongPress}
+        longPressTime={700}>
+      </LongPressable>}
       {cardContent(data)}
     </div>
   );
