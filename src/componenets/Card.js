@@ -3,7 +3,7 @@ import React, { useState } from "react";
 import LongPressable from 'react-longpressable';
 
 export default function Card({ data, updateBoard, flagCard, incrementMoveCount, incrementFlagCount, decrementFlagCount }) {
-  const [timerID , settimerID ] = useState(true);
+  const [timerID , settimerID ] = useState(false);
   const [isLongPressing , setIsLongPressing] = useState(false);
 
 
@@ -53,6 +53,7 @@ export default function Card({ data, updateBoard, flagCard, incrementMoveCount, 
   };
 
   const rightClicking = (e) => {
+    console.log('rightClicking')
     e.preventDefault();
     if (flagCard(data.x, data.y)) {
       incrementFlagCount();
