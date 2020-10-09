@@ -7,6 +7,24 @@ export default function Card({ data, updateBoard, flagCard, incrementMoveCount, 
     return 'rgba(' + o(r() * s) + ',' + o(r() * s) + ',' + o(r() * s) + ',' + r().toFixed(1) + ')';
   }
 
+  const unreavledBackgroundColor = (data) => {
+    if ((data.x + data.y) % 2 === 0) {
+      return '#6dba54';
+    }
+    else {
+      return '#4f8a3d';
+    }
+  }
+
+  const reavledBackgroundColor = (data) => {
+    if ((data.x + data.y) % 2 === 0) {
+      return '#fad3ac';
+    }
+    else {
+      return '#c29970';
+    }
+  }
+
   const cardBackgroundColor = (data) => {
     if (data.revealed && data.value === "M") {
       return random_rgba();
@@ -25,15 +43,7 @@ export default function Card({ data, updateBoard, flagCard, incrementMoveCount, 
   }
 
   const leftClicking = (e) => {
-    // console.log('leftClicking', data.x, data.y);
-    if (data.revealed || data.flagged) {
-      return;
-    }
-    if (!data.revealed) {
-      incrementMoveCount();
-    }
-
-    updateBoard(data.x, data.y);
+    updateBoard(data);
   };
 
   const rightClicking = (e) => {
@@ -68,24 +78,6 @@ export default function Card({ data, updateBoard, flagCard, incrementMoveCount, 
     </div>
   );
 }
-
-const unreavledBackgroundColor = (data) => {
-  if ((data.x + data.y) % 2 === 0) {
-    return '#6dba54';
-  }
-  else {
-    return '#4f8a3d';
-  }
-};
-
-const reavledBackgroundColor = (data) => {
-  if ((data.x + data.y) % 2 === 0) {
-    return '#fad3ac';
-  }
-  else {
-    return '#c29970';
-  }
-};
 
 const colourful_Number_Card = (value) => {
   switch (value) {

@@ -6,7 +6,7 @@ import Timer from "./Timer"
 const Board = () => {
 
     const [board, setBoard] = useState([]);
-    const [level, setLevel] = useState('too_easy');
+    const [level, setLevel] = useState('easy');
     const [mineLocation, setMineLocations] = useState([]);
     const [moveCount, setMoveCount] = useState(0);
     const [flagCount, setFlagCount] = useState(0);
@@ -35,7 +35,7 @@ const Board = () => {
         let board = [];
         let mineLocation = [];
 
-        board = populate_Empty_Board(grid_w, grid_l, mine_num, board);
+        board = populate_Empty_Board(grid_w, grid_l, board);
 
         if (first_move) {
             mineLocation = inject_Mines(grid_w, grid_l, mine_num, board, mineLocation, level);
@@ -71,34 +71,32 @@ const Board = () => {
     function incrementFlagCount() {
         setFlagCount(prevCount => prevCount + 1);
         // console.log('flagCount increase to:', flagCount+1);
-        const {mine_num } = config[level];
+        const { mine_num } = config[level];
         // console.log('MineCount decrease to:',mine_num-flagCount-1);
-        setMineCount(mine_num-flagCount-1)
+        setMineCount(mine_num - flagCount - 1)
     }
 
     function decrementFlagCount() {
         setFlagCount(prevCount => prevCount - 1);
         // console.log('flagCount decrease to:', flagCount-1);
-        const {mine_num } = config[level];
+        const { mine_num } = config[level];
         // console.log('MineCount increase to:',mine_num-flagCount+1);
-        setMineCount(mine_num-flagCount+1)
+        setMineCount(mine_num - flagCount + 1)
     }
 
-    function populate_Empty_Board(grid_w, grid_l, mine_num, board) {
-        for (let x = 0; x < grid_w; x++) {
-            let subColon = [];
-            for (let y = 0; y < grid_l; y++) {
-                subColon.push({
+    function populate_Empty_Board(grid_w, grid_l, board) {
+        for (let i = 0; i < grid_w; i++) {
+            board.push([]);
+            for (let j = 0; j < grid_l; j++) {
+                board[i].push({
                     value: 0,
+                    x: i,
+                    y: j,
                     revealed: false,
-                    x: x,
-                    y: y,
-                    flagged: false,
+                    flagged: false
                 });
             }
-            board.push(subColon);
         }
-
         return board;
     }
 
@@ -206,15 +204,23 @@ const Board = () => {
         setGame(true);
     }
 
-    function updateBoard(x, y, e) {
+    function updateBoard(data, e) {
+        // console.log(data);
+        if (data.revealed || data.flagged) {
+            return;
+        }
+        if (!data.revealed) {
+            incrementMoveCount();
+        }
+
         let updated_board = [...board];
         // Make first move always valid
-        first_move_Portection(updated_board, x, y)
-        if (updated_board[x][y].value === "M") {
+        first_move_Portection(updated_board, data.x, data.y)
+        if (updated_board[data.x][data.y].value === "M") {
             revealAllMines(updated_board);
             sendEndGameMessage(false);
         } else {
-            updated_board = revealCard(updated_board, x, y);
+            updated_board = revealCard(updated_board, data.x, data.y);
             if (!updated_board) {
                 return;
             }
@@ -285,7 +291,7 @@ const Board = () => {
         <div className="game">
             <div className="status-bar">
                 <div className="Timer">
-                    <Timer gameOver={gameOver} sendTime={setElapsedTime}/>
+                    <Timer gameOver={gameOver} sendTime={setElapsedTime} />
                 </div>
                 <div className="Mine Count">
                     <span><span role="img" aria-label="Flag">🚩</span>Mine Count:{mineCount} </span>
@@ -325,7 +331,7 @@ const Board = () => {
                 <div id="overlayin">
                     <p id="end game message" className="big glow">Congratulations, you won!!!</p>
                     <p className="darker">It took you <span id="moveCount">0</span> moves.</p>
-                    <p className="darker">It took you <span id="elapsed time">{elapsedTime+1} </span> Seconds.</p>
+                    <p className="darker">It took you <span id="elapsed time">{elapsedTime + 1} </span> Seconds.</p>
                     <p className="darker">Click/Press anywhere to restart the game.</p>
                 </div>
             </div>
