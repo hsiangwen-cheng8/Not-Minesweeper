@@ -109,7 +109,7 @@ export default function Card({ data, updateBoard, flagCard, incrementMoveCount, 
   }
 
   return (
-    <div className="Card unselectable" style={style}
+    <div className="Card" style={style}
       onClick={(e) => leftClicking(e)}
       onContextMenu={(e) => rightClicking(e)}
       onTouchStart={(e) => longPressPointerDown(e)}

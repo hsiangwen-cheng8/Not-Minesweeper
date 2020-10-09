@@ -7,7 +7,7 @@ function App() {
   console.log("Your render area:", html.clientWidth, "x", html.clientHeight)
 
   return (
-    <div className="App">
+    <div className="App unselectable">
       <div className="container">
         <h1>Not MineSweeper</h1>
         <Board />
