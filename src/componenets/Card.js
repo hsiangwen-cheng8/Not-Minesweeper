@@ -1,6 +1,6 @@
 import React from "react";
 
-export default function Card({ data, updateBoard, flagCard, incrementMoveCount, incrementFlagCount }) {
+export default function Card({ data, updateBoard, flagCard, incrementMoveCount, incrementFlagCount, decrementFlagCount }) {
   // I stole this function from https://stackoverflow.com/questions/23095637/how-do-you-get-random-rgb-in-javascript
   function random_rgba() {
     var o = Math.round, r = Math.random, s = 255;
@@ -40,8 +40,15 @@ export default function Card({ data, updateBoard, flagCard, incrementMoveCount, 
 
   const onClickFlag = (e) => {
     e.preventDefault();
-    flagCard(data.x, data.y);
-    incrementFlagCount();
+    if(flagCard(data.x, data.y))
+    {
+      incrementFlagCount();
+    }
+    else
+    {
+      decrementFlagCount();
+    }
+    
   };
 
   return (

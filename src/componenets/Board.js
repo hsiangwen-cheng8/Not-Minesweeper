@@ -1,24 +1,33 @@
 import React, { useState, useEffect } from "react";
 import config from "../config";
 import Card from "./Card";
+import Timer from "./Timer"
 
 const Board = () => {
+
     const [board, setBoard] = useState([]);
     const [level, setLevel] = useState('too_easy');
     const [mineLocation, setMineLocations] = useState([]);
     const [moveCount, setMoveCount] = useState(0);
     const [flagCount, setFlagCount] = useState(0);
+    const [mineCount, setMineCount] = useState(0);
+    const [elapsedTime, setTime] = useState(0);
+    const [gameOver, setGame] = useState(0);
+
 
     useEffect(() => {
         new_Board(level, false);
     }, []);
 
     const new_Board = (level, first_move) => {
+        setGame(true);
+        setTime(-1);
         const { grid_w, grid_l, mine_num } = config[level];
         const board = create_Board(grid_w, grid_l, mine_num, level, first_move);
         setBoard(board.board);
         setMineLocations(board.mineLocation);
         setMoveCount(0);
+        setMineCount(mine_num);
     }
 
     function create_Board(grid_w, grid_l, mine_num, level, first_move) {
@@ -54,8 +63,24 @@ const Board = () => {
         setMoveCount(prevCount => prevCount + 1);
     }
 
+    function setElapsedTime(time) {
+        setTime(time);
+    }
+
     function incrementFlagCount() {
         setFlagCount(prevCount => prevCount + 1);
+        console.log('flagCount is:', flagCount+1);
+        const {mine_num } = config[level];
+        console.log(mine_num-flagCount-1);
+        setMineCount(mine_num-flagCount-1)
+    }
+
+    function decrementFlagCount() {
+        setFlagCount(prevCount => prevCount - 1);
+        console.log('flagCount is:', flagCount-1);
+        const {mine_num } = config[level];
+        console.log(mine_num-flagCount+1);
+        setMineCount(mine_num-flagCount+1)
     }
 
     function populate_Empty_Board(grid_w, grid_l, mine_num, board) {
@@ -148,6 +173,7 @@ const Board = () => {
             setBoard(new_board);
             setMineLocations(mineLocation);
             setMoveCount(1);
+            setGame(false);
             return true;
         }
         return false;
@@ -175,6 +201,8 @@ const Board = () => {
         document.getElementById('overlay').style.visibility = "visible";
         document.getElementById('end game message').innerHTML = end_game_message;
         document.getElementById('moveCount').innerHTML = moveCount + 1;
+        // document.getElementById('elapsedTime').innerHTML = moveCount + 1;
+        setGame(true);
     }
 
     function updateBoard(x, y, e) {
@@ -211,6 +239,7 @@ const Board = () => {
         let updated_board = [...board];
         updated_board[x][y].flagged = !updated_board[x][y].flagged;
         setBoard(updated_board);
+        return updated_board[x][y].flagged;
     };
 
     const revealCard = (board, x, y) => {
@@ -237,7 +266,7 @@ const Board = () => {
     const revealAdjacentCard = (board, x, y) => {
         for (let xi = x - 1; xi <= x + 1; xi++) {
             for (let yi = y - 1; yi <= y + 1; yi++) {
-                if (indexBoundsCheck(xi,yi) && !board[xi][yi].revealed) {
+                if (indexBoundsCheck(xi, yi) && !board[xi][yi].revealed) {
                     board = revealCard(board, xi, yi);
                 }
             }
@@ -254,6 +283,12 @@ const Board = () => {
     return (
         <div className="game">
             <div className="status-bar">
+                <div className="Timer">
+                    <Timer gameOver={gameOver} sendTime={setElapsedTime}/>
+                </div>
+                <div className="Mine Count">
+                    <span>Mine Count:{mineCount} </span>
+                </div>
                 <div className="Move Count">
                     <span>Move Count:{moveCount} </span>
                 </div>
@@ -277,6 +312,7 @@ const Board = () => {
                                         flagCard={flagCard}
                                         incrementMoveCount={incrementMoveCount}
                                         incrementFlagCount={incrementFlagCount}
+                                        decrementFlagCount={decrementFlagCount}
                                     />
                                 );
                             })}
@@ -288,6 +324,7 @@ const Board = () => {
                 <div id="overlayin">
                     <p id="end game message" className="big glow">Congratulations, you won!!!</p>
                     <p className="darker">It took you <span id="moveCount">0</span> moves.</p>
+                    <p className="darker">It took you <span id="elapsed time">{elapsedTime} </span> Seconds.</p>
                     <p className="darker">Click/Press anywhere to restart the game.</p>
                 </div>
             </div>
