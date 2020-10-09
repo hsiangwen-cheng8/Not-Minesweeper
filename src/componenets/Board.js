@@ -27,6 +27,7 @@ const Board = () => {
         setBoard(board.board);
         setMineLocations(board.mineLocation);
         setMoveCount(0);
+        setFlagCount(0);
         setMineCount(mine_num);
     }
 
@@ -69,17 +70,17 @@ const Board = () => {
 
     function incrementFlagCount() {
         setFlagCount(prevCount => prevCount + 1);
-        console.log('flagCount is:', flagCount+1);
+        // console.log('flagCount increase to:', flagCount+1);
         const {mine_num } = config[level];
-        console.log(mine_num-flagCount-1);
+        // console.log('MineCount decrease to:',mine_num-flagCount-1);
         setMineCount(mine_num-flagCount-1)
     }
 
     function decrementFlagCount() {
         setFlagCount(prevCount => prevCount - 1);
-        console.log('flagCount is:', flagCount-1);
+        // console.log('flagCount decrease to:', flagCount-1);
         const {mine_num } = config[level];
-        console.log(mine_num-flagCount+1);
+        // console.log('MineCount increase to:',mine_num-flagCount+1);
         setMineCount(mine_num-flagCount+1)
     }
 
@@ -227,7 +228,7 @@ const Board = () => {
         let non_mine_num = 0;
         for (let i = 0; i < grid_w; i++) {
             for (let j = 0; j < grid_l; j++) {
-                if (board[i][j].value != "M" && board[i][j].revealed === true) {
+                if (board[i][j].value !== "M" && board[i][j].revealed === true) {
                     non_mine_num++;
                 }
             }
@@ -287,7 +288,7 @@ const Board = () => {
                     <Timer gameOver={gameOver} sendTime={setElapsedTime}/>
                 </div>
                 <div className="Mine Count">
-                    <span>Mine Count:{mineCount} </span>
+                    <span><span role="img" aria-label="Flag">🚩</span>Mine Count:{mineCount} </span>
                 </div>
                 <div className="Move Count">
                     <span>Move Count:{moveCount} </span>
@@ -324,7 +325,7 @@ const Board = () => {
                 <div id="overlayin">
                     <p id="end game message" className="big glow">Congratulations, you won!!!</p>
                     <p className="darker">It took you <span id="moveCount">0</span> moves.</p>
-                    <p className="darker">It took you <span id="elapsed time">{elapsedTime} </span> Seconds.</p>
+                    <p className="darker">It took you <span id="elapsed time">{elapsedTime+1} </span> Seconds.</p>
                     <p className="darker">Click/Press anywhere to restart the game.</p>
                 </div>
             </div>
