@@ -81,6 +81,7 @@ export default function Card({ data, updateBoard, flagCard, incrementMoveCount, 
     }
     if(timerID && isLongPressing)
     {
+      rightClicking(e);
       setIsLongPressing(false);
       settimerID(false);
       clearTimeout();
@@ -112,8 +113,8 @@ export default function Card({ data, updateBoard, flagCard, incrementMoveCount, 
     <div className="Card" style={style}
       onClick={(e) => leftClicking(e)}
       onContextMenu={(e) => rightClicking(e)}
-      onTouchStart={(e) => longPressPointerUp(e)}
-      onTouchEnd={(e) => longPressPointerDown(e)}
+      onTouchStart={(e) => longPressPointerDown(e)}
+      onTouchEnd={(e) => longPressPointerUp(e)}
     >
       {cardContent(data)}
     </div>
