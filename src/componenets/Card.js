@@ -1,6 +1,4 @@
 import React, { useState } from "react";
-// This thing is from https://www.npmjs.com/package/react-longpressable. I CAN USE LIBRARY YO
-import LongPressable from 'react-longpressable';
 
 export default function Card({ data, updateBoard, flagCard, incrementMoveCount, incrementFlagCount, decrementFlagCount }) {
   const [timerID , settimerID ] = useState(false);
@@ -111,7 +109,7 @@ export default function Card({ data, updateBoard, flagCard, incrementMoveCount, 
   }
 
   return (
-    <div className="Card" style={style}
+    <div className="Card unselectable" style={style}
       onClick={(e) => leftClicking(e)}
       onContextMenu={(e) => rightClicking(e)}
       onTouchStart={(e) => longPressPointerDown(e)}
