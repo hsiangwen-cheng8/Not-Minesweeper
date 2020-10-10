@@ -1,8 +1,8 @@
 import React, { useState } from "react";
 
 export default function Card({ data, updateBoard, flagCard, incrementMoveCount, incrementFlagCount, decrementFlagCount }) {
-  const [timerID , settimerID ] = useState(false);
-  const [isLongPressing , setIsLongPressing] = useState(false);
+  const [timerID, settimerID] = useState(false);
+  const [isLongPressing, setIsLongPressing] = useState(false);
 
 
   // I stole random_rgba function from https://stackoverflow.com/questions/23095637/how-do-you-get-random-rgb-in-javascript
@@ -78,12 +78,11 @@ export default function Card({ data, updateBoard, flagCard, incrementMoveCount, 
     if (e.pointerType === 'mouse') {
       return
     }
-    if(timerID && isLongPressing)
-    {
+    if (timerID && isLongPressing) {
       rightClicking(e);
+      clearTimeout(timerID);
       setIsLongPressing(false);
       settimerID(false);
-      clearTimeout();
     }
     console.log('longPressPointerUp');
   }
@@ -93,11 +92,13 @@ export default function Card({ data, updateBoard, flagCard, incrementMoveCount, 
       return
     }
     console.log('longPressPointerDown');
-    setIsLongPressing(true);
-    setTimeout(() => {
-      settimerID(true);
-      console.log('lol');
-    }, 750)
+    if (!timerID) {
+      setIsLongPressing(true);
+      setTimeout(() => {
+        settimerID(true);
+        console.log('lol');
+      }, 1000)
+    }
   }
 
   const longPressPointerMove = (e) => {
@@ -106,6 +107,10 @@ export default function Card({ data, updateBoard, flagCard, incrementMoveCount, 
 
   const longPressPointerLeave = (e) => {
     console.log('longPressPointerLeave');
+    if (timerID) {
+      clearTimeout(timerID);
+      settimerID(false);
+    }
   }
 
   return (
@@ -114,6 +119,8 @@ export default function Card({ data, updateBoard, flagCard, incrementMoveCount, 
       onContextMenu={(e) => rightClicking(e)}
       onTouchStart={(e) => longPressPointerDown(e)}
       onTouchEnd={(e) => longPressPointerUp(e)}
+      // onPointerMove={(e) => longPressPointerMove(e)}
+      onPointerLeave={(e) => longPressPointerLeave(e)}
     >
       {cardContent(data)}
     </div>
