@@ -3,9 +3,6 @@ import './App.css';
 import Board from "./componenets/Board";
 
 function App() {
-  let html = document.querySelector("html");
-  console.log("Your render area:", html.clientWidth, "x", html.clientHeight)
-
   return (
     <div className="App unselectable">
       <div className="container">
