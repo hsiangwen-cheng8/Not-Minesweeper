@@ -13,7 +13,7 @@ export default function Timer({ gameOver, sendTime }) {
             setTime(date.toLocaleTimeString());
         }, 1000);
         if (gameOver) {
-            console.log('game over')
+            // console.log('game over')
             clearTimeout(timeout);
             clearInterval(timeout);
             seconds_Passed.current = 0;

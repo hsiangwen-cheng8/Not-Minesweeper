@@ -1,4 +1,5 @@
 import React, { useState } from "react";
+import { isMobile } from 'react-device-detect';
 
 export default function Card({ data, updateBoard, flagCard, incrementMoveCount, incrementFlagCount, decrementFlagCount }) {
   const [timerID, settimerID] = useState(false);
@@ -51,7 +52,7 @@ export default function Card({ data, updateBoard, flagCard, incrementMoveCount, 
   };
 
   const rightClicking = (e) => {
-    console.log('rightClicking')
+    // console.log('rightClicking')
     e.preventDefault();
     if (flagCard(data.x, data.y)) {
       incrementFlagCount();
@@ -75,38 +76,44 @@ export default function Card({ data, updateBoard, flagCard, incrementMoveCount, 
   }
 
   const longPressPointerUp = (e) => {
-    if (e.pointerType === 'mouse') {
+    if (!isMobile)  {
       return
     }
+    // console.log('longPressPointerUp',timerID,isLongPressing,isMobile);
     if (timerID && isLongPressing) {
       rightClicking(e);
       clearTimeout(timerID);
       setIsLongPressing(false);
       settimerID(false);
     }
-    console.log('longPressPointerUp');
   }
 
   const longPressPointerDown = (e) => {
-    if (e.pointerType === 'mouse') {
+    if (!isMobile)  {
       return
     }
-    console.log('longPressPointerDown');
+    // console.log('longPressPointerDown',timerID,isLongPressing,isMobile);
     if (!timerID) {
       setIsLongPressing(true);
       setTimeout(() => {
         settimerID(true);
-        console.log('lol');
-      }, 1000)
+      }, 750)
     }
   }
 
-  const longPressPointerMove = (e) => {
-    console.log('longPressPointerMove');
+  const PConContextMenu = (e) => {
+    if (isMobile) {
+      return
+    }
+    // console.log('PConContextMenu');
+    rightClicking(e);
   }
 
   const longPressPointerLeave = (e) => {
-    console.log('longPressPointerLeave');
+    if (!isMobile) {
+      return
+    }
+    // console.log('longPressPointerLeave');
     if (timerID) {
       clearTimeout(timerID);
       settimerID(false);
@@ -116,11 +123,11 @@ export default function Card({ data, updateBoard, flagCard, incrementMoveCount, 
   return (
     <div className="Card" style={style}
       onClick={(e) => leftClicking(e)}
-      onContextMenu={(e) => rightClicking(e)}
+      onContextMenu={(e) => PConContextMenu(e)}
       onTouchStart={(e) => longPressPointerDown(e)}
       onTouchEnd={(e) => longPressPointerUp(e)}
       // onPointerMove={(e) => longPressPointerMove(e)}
-      onPointerLeave={(e) => longPressPointerLeave(e)}
+      // onPointerLeave={(e) => longPressPointerLeave(e)}
     >
       {cardContent(data)}
     </div>
