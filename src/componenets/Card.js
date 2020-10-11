@@ -4,6 +4,9 @@ import { isMobile } from 'react-device-detect';
 export default function Card({ data, updateBoard, flagCard, incrementMoveCount, incrementFlagCount, decrementFlagCount }) {
   const [timerID, settimerID] = useState(false);
   const [isLongPressing, setIsLongPressing] = useState(false);
+  const [downTarget, setDownTarget] = useState([]);
+  const [moveTarget, setMoveTarget] = useState([]);
+  const [movedFlag, setMovedFlag] = useState(false);
 
 
   // I stole random_rgba function from https://stackoverflow.com/questions/23095637/how-do-you-get-random-rgb-in-javascript
@@ -75,25 +78,43 @@ export default function Card({ data, updateBoard, flagCard, incrementMoveCount, 
     return '';
   }
 
+  const inMoveRange = (point1, point2) => {
+    if (typeof point1 === 'undefined' || typeof point2 === 'undefined') {
+      // console.log('inMoveRange argument is undefined')
+      return;
+    }
+    // console.log('inmoverange', point1, point2)
+    let distance = Math.sqrt(Math.pow(point1[0] - point2[0], 2) + Math.pow(point1[1] - point2[1], 2))
+    // console.log('inmoverange', distance);
+    if (distance > 15) {
+      setMovedFlag(true);
+    }
+  }
+
   const longPressPointerUp = (e) => {
     // e.preventDefault();
-    if (!isMobile)  {
+    if (!isMobile) {
       return
     }
-    console.log('longPressPointerUp timeID:',timerID,' isLongPressing',isLongPressing,' isMobile',isMobile);
-    if (timerID && isLongPressing) {
+    // console.log('longPressPointerUp timeID:', timerID, ' isLongPressing', isLongPressing, ' isMobile', isMobile);
+    console.log('You moved alway too far:',movedFlag);
+    // inMoveRange(downTarget, moveTarget)
+    if (timerID && isLongPressing && !movedFlag) {
       rightClicking(e);
       clearTimeout(timerID);
       setIsLongPressing(false);
       settimerID(false);
     }
+    setMoveTarget([]);
+    setMovedFlag(false);
   }
 
   const longPressPointerDown = (e) => {
-    if (!isMobile)  {
+    if (!isMobile) {
       return
     }
-    console.log('longPressPointerDowntimeID:',timerID,' isLongPressing',isLongPressing,' isMobile',isMobile);
+    // console.log('longPressPointerDowntimeID: ', timerID, ' isLongPressing', isLongPressing, ' isMobile', isMobile);
+    setDownTarget([e.targetTouches[0].clientX, e.targetTouches[0].clientY]);
     if (!timerID) {
       setIsLongPressing(true);
       setTimeout(() => {
@@ -103,29 +124,27 @@ export default function Card({ data, updateBoard, flagCard, incrementMoveCount, 
   }
 
   const PConContextMenu = (e) => {
+    e.preventDefault();
     if (isMobile) {
       return
     }
-    // console.log('PConContextMenu');
-    e.preventDefault();
     rightClicking(e);
   }
 
   const myOnTouchCancel = (e) => {
-    console.log('myOnTouchCancel:',timerID,' isLongPressing',isLongPressing,' isMobile',isMobile);
+    console.log('myOnTouchCancel:', timerID, ' isLongPressing', isLongPressing, ' isMobile', isMobile);
   }
 
   const myOnTouchMove = (e) => {
-    // e.preventDefault();
-    // console.log('myOnTouchMove:',timerID,' isLongPressing',isLongPressing,' isMobile',isMobile);
-    // console.log(e);
+    setMoveTarget([e.targetTouches[0].clientX, e.targetTouches[0].clientY]);
+    inMoveRange(downTarget, [e.targetTouches[0].clientX, e.targetTouches[0].clientY]);
   }
 
   const longPressPointerLeave = (e) => {
     if (!isMobile) {
       return
     }
-    // console.log('longPressPointerLeave');
+    console.log('longPressPointerLeave');
     if (timerID) {
       clearTimeout(timerID);
       settimerID(false);
@@ -138,10 +157,10 @@ export default function Card({ data, updateBoard, flagCard, incrementMoveCount, 
       onContextMenu={(e) => PConContextMenu(e)}
       onTouchStart={(e) => longPressPointerDown(e)}
       onTouchEnd={(e) => longPressPointerUp(e)}
-      onTouchCancel ={(e) => myOnTouchCancel(e)}
-      onTouchMove ={(e) => myOnTouchMove(e)}
-      // onPointerMove={(e) => longPressPointerMove(e)}
-      // onPointerLeave={(e) => longPressPointerLeave(e)}
+      onTouchCancel={(e) => myOnTouchCancel(e)}
+      onTouchMove={(e) => myOnTouchMove(e)}
+    // onPointerMove={(e) => longPressPointerMove(e)}
+    // onPointerLeave={(e) => longPressPointerLeave(e)}
     >
       {cardContent(data)}
     </div>
