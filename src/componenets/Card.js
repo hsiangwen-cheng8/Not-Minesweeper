@@ -2,7 +2,7 @@ import React, { useState } from "react";
 import { isMobile } from 'react-device-detect';
 
 export default function Card({ data, updateBoard, flagCard, incrementMoveCount, incrementFlagCount, decrementFlagCount }) {
-  const [timerID, settimerID] = useState(false);
+  const [timer, setTimer] = useState(false);
   const [isLongPressing, setIsLongPressing] = useState(false);
   const [downTarget, setDownTarget] = useState([]);
   const [moveTarget, setMoveTarget] = useState([]);
@@ -96,14 +96,14 @@ export default function Card({ data, updateBoard, flagCard, incrementMoveCount, 
     if (!isMobile) {
       return
     }
-    // console.log('longPressPointerUp timeID:', timerID, ' isLongPressing', isLongPressing, ' isMobile', isMobile);
+    // console.log('longPressPointerUp timeID:', timer, ' isLongPressing', isLongPressing, ' isMobile', isMobile);
     console.log('You moved alway too far:',movedFlag);
     // inMoveRange(downTarget, moveTarget)
-    if (timerID && isLongPressing && !movedFlag) {
+    if (timer && isLongPressing && !movedFlag) {
       rightClicking(e);
-      clearTimeout(timerID);
+      clearTimeout(timer);
       setIsLongPressing(false);
-      settimerID(false);
+      setTimer(false);
     }
     setMoveTarget([]);
     setMovedFlag(false);
@@ -113,12 +113,12 @@ export default function Card({ data, updateBoard, flagCard, incrementMoveCount, 
     if (!isMobile) {
       return
     }
-    // console.log('longPressPointerDowntimeID: ', timerID, ' isLongPressing', isLongPressing, ' isMobile', isMobile);
+    // console.log('longPressPointerDowntimeID: ', timer, ' isLongPressing', isLongPressing, ' isMobile', isMobile);
     setDownTarget([e.targetTouches[0].clientX, e.targetTouches[0].clientY]);
-    if (!timerID) {
+    if (!timer) {
       setIsLongPressing(true);
       setTimeout(() => {
-        settimerID(true);
+        setTimer(true);
       }, 750)
     }
   }
@@ -132,7 +132,7 @@ export default function Card({ data, updateBoard, flagCard, incrementMoveCount, 
   }
 
   const myOnTouchCancel = (e) => {
-    console.log('myOnTouchCancel:', timerID, ' isLongPressing', isLongPressing, ' isMobile', isMobile);
+    console.log('myOnTouchCancel:', timer, ' isLongPressing', isLongPressing, ' isMobile', isMobile);
   }
 
   const myOnTouchMove = (e) => {
@@ -145,9 +145,9 @@ export default function Card({ data, updateBoard, flagCard, incrementMoveCount, 
       return
     }
     console.log('longPressPointerLeave');
-    if (timerID) {
-      clearTimeout(timerID);
-      settimerID(false);
+    if (timer) {
+      clearTimeout(timer);
+      setTimer(false);
     }
   }
 
