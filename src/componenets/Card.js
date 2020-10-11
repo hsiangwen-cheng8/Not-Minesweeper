@@ -53,7 +53,7 @@ export default function Card({ data, updateBoard, flagCard, incrementMoveCount, 
 
   const rightClicking = (e) => {
     // console.log('rightClicking')
-    e.preventDefault();
+    // e.preventDefault();
     if (flagCard(data.x, data.y)) {
       incrementFlagCount();
     }
@@ -64,11 +64,11 @@ export default function Card({ data, updateBoard, flagCard, incrementMoveCount, 
 
   const cardContent = (data) => {
     if (data.flagged && !data.revealed) {
-      return <img src="/Not-Minesweeper/redflag2.png" alt="flag" id="card_image"></img>
+      return <img src="/Not-Minesweeper/redflag2.png" className="unselectable" alt="flag" id="card_image"></img>
     }
     else if (data.revealed && data.value !== 0) {
       if (data.value === "M") {
-        return <img src="/Not-Minesweeper/minesweeper-icon.png" alt="mine" id="card_image"></img>
+        return <img src="/Not-Minesweeper/minesweeper-icon.png" className="unselectable" alt="mine" id="card_image"></img>
       }
       return data.value
     }
@@ -76,10 +76,11 @@ export default function Card({ data, updateBoard, flagCard, incrementMoveCount, 
   }
 
   const longPressPointerUp = (e) => {
+    // e.preventDefault();
     if (!isMobile)  {
       return
     }
-    // console.log('longPressPointerUp',timerID,isLongPressing,isMobile);
+    console.log('longPressPointerUp timeID:',timerID,' isLongPressing',isLongPressing,' isMobile',isMobile);
     if (timerID && isLongPressing) {
       rightClicking(e);
       clearTimeout(timerID);
@@ -92,7 +93,7 @@ export default function Card({ data, updateBoard, flagCard, incrementMoveCount, 
     if (!isMobile)  {
       return
     }
-    // console.log('longPressPointerDown',timerID,isLongPressing,isMobile);
+    console.log('longPressPointerDowntimeID:',timerID,' isLongPressing',isLongPressing,' isMobile',isMobile);
     if (!timerID) {
       setIsLongPressing(true);
       setTimeout(() => {
@@ -106,7 +107,18 @@ export default function Card({ data, updateBoard, flagCard, incrementMoveCount, 
       return
     }
     // console.log('PConContextMenu');
+    e.preventDefault();
     rightClicking(e);
+  }
+
+  const myOnTouchCancel = (e) => {
+    console.log('myOnTouchCancel:',timerID,' isLongPressing',isLongPressing,' isMobile',isMobile);
+  }
+
+  const myOnTouchMove = (e) => {
+    // e.preventDefault();
+    // console.log('myOnTouchMove:',timerID,' isLongPressing',isLongPressing,' isMobile',isMobile);
+    // console.log(e);
   }
 
   const longPressPointerLeave = (e) => {
@@ -126,6 +138,8 @@ export default function Card({ data, updateBoard, flagCard, incrementMoveCount, 
       onContextMenu={(e) => PConContextMenu(e)}
       onTouchStart={(e) => longPressPointerDown(e)}
       onTouchEnd={(e) => longPressPointerUp(e)}
+      onTouchCancel ={(e) => myOnTouchCancel(e)}
+      onTouchMove ={(e) => myOnTouchMove(e)}
       // onPointerMove={(e) => longPressPointerMove(e)}
       // onPointerLeave={(e) => longPressPointerLeave(e)}
     >
