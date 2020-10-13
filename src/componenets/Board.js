@@ -22,8 +22,8 @@ const Board = () => {
     const new_Board = (level, first_move) => {
         setGame(true);
         setTime(-1);
-        const { grid_w, grid_l, mine_num } = config[level];
-        const board = create_Board(grid_w, grid_l, mine_num, level, first_move);
+        const { grid_row, grid_col, mine_num } = config[level];
+        const board = create_Board(grid_row, grid_col, mine_num, level, first_move);
         setBoard(board.board);
         setMineLocations(board.mineLocation);
         setMoveCount(0);
@@ -31,15 +31,15 @@ const Board = () => {
         setMineCount(mine_num);
     }
 
-    function create_Board(grid_w, grid_l, mine_num, level, first_move) {
+    function create_Board(grid_row, grid_col, mine_num, level, first_move) {
         let board = [];
         let mineLocation = [];
 
-        board = populate_Empty_Board(grid_w, grid_l, board);
+        board = populate_Empty_Board(grid_row, grid_col, board);
 
         if (first_move) {
-            mineLocation = inject_Mines(grid_w, grid_l, mine_num, board, mineLocation, level);
-            board = calculate_Card_Value(grid_w, grid_l, board);
+            mineLocation = inject_Mines(grid_row, grid_col, mine_num, board, mineLocation, level);
+            board = calculate_Card_Value(grid_row, grid_col, board);
         }
 
         return { board, mineLocation };
@@ -84,10 +84,10 @@ const Board = () => {
         setMineCount(mine_num - flagCount + 1)
     }
 
-    function populate_Empty_Board(grid_w, grid_l, board) {
-        for (let i = 0; i < grid_w; i++) {
+    function populate_Empty_Board(grid_row, grid_col, board) {
+        for (let i = 0; i < grid_row; i++) {
             board.push([]);
-            for (let j = 0; j < grid_l; j++) {
+            for (let j = 0; j < grid_col; j++) {
                 board[i].push({
                     value: 0,
                     x: i,
@@ -114,14 +114,14 @@ const Board = () => {
         return true;
     }
 
-    function inject_Mines(grid_w, grid_l, mine_num, board, mineLocation, level, x, y) {
+    function inject_Mines(grid_row, grid_col, mine_num, board, mineLocation, level, x, y) {
         let minereveal = false;
         if (level === 'too_easy') {
             minereveal = false;
         }
         for (let mineCount = 0; mineCount < mine_num;) {
-            // let mine = board[getRandomInt(grid_w - 1)][getRandomInt(grid_l - 1)];
-            let mine = board[getRandomInt(grid_w)][getRandomInt(grid_l)];
+            // let mine = board[getRandomInt(grid_row - 1)][getRandomInt(grid_col - 1)];
+            let mine = board[getRandomInt(grid_row)][getRandomInt(grid_col)];
             if (mine.value === 0 && notadjacent(x, y, mine.x, mine.y) && x !== mine.x && y !== mine.y) {
                 mine.value = "M";
                 mine.revealed = minereveal;
@@ -133,17 +133,17 @@ const Board = () => {
         return mineLocation;
     }
 
-    function calculate_Card_Value(grid_w, grid_l, board) {
-        for (let x = 0; x < grid_w; x++) {
-            for (let y = 0; y < grid_l; y++) {
+    function calculate_Card_Value(grid_row, grid_col, board) {
+        for (let x = 0; x < grid_row; x++) {
+            for (let y = 0; y < grid_col; y++) {
                 if (board[x][y].value === "M") {
                     continue;
                 }
                 let surround_mine_num = 0;
                 for (let xi = x - 1; xi <= x + 1; xi++) {
                     for (let yi = y - 1; yi <= y + 1; yi++) {
-                        if ((xi < 0 || xi >= grid_w) ||
-                            (yi < 0 || yi >= grid_l) ||
+                        if ((xi < 0 || xi >= grid_row) ||
+                            (yi < 0 || yi >= grid_col) ||
                             (xi === x && yi === y)) {
                             continue
                         }
@@ -164,11 +164,11 @@ const Board = () => {
 
     const first_move_Portection = (board, x, y) => {
         if (moveCount === 0) {
-            const { grid_w, grid_l, mine_num } = config[level];
+            const { grid_row, grid_col, mine_num } = config[level];
             let mineLocation = [];
             let new_board = [...board];
-            mineLocation = inject_Mines(grid_w, grid_l, mine_num, new_board, mineLocation, level, x, y);
-            new_board = calculate_Card_Value(grid_w, grid_l, new_board);
+            mineLocation = inject_Mines(grid_row, grid_col, mine_num, new_board, mineLocation, level, x, y);
+            new_board = calculate_Card_Value(grid_row, grid_col, new_board);
             setBoard(new_board);
             setMineLocations(mineLocation);
             setMoveCount(1);
@@ -188,8 +188,8 @@ const Board = () => {
     }
 
     const checkWinGame = () => {
-        const { grid_w, grid_l, mine_num } = config[level];
-        return checkNonMinesAmount(grid_w, grid_l) === grid_w * grid_l - mine_num;
+        const { grid_row, grid_col, mine_num } = config[level];
+        return checkNonMinesAmount(grid_row, grid_col) === grid_row * grid_col - mine_num;
     }
 
     const sendEndGameMessage = (win) => {
@@ -230,10 +230,10 @@ const Board = () => {
         }
     };
 
-    const checkNonMinesAmount = (grid_w, grid_l) => {
+    const checkNonMinesAmount = (grid_row, grid_col) => {
         let non_mine_num = 0;
-        for (let i = 0; i < grid_w; i++) {
-            for (let j = 0; j < grid_l; j++) {
+        for (let i = 0; i < grid_row; i++) {
+            for (let j = 0; j < grid_col; j++) {
                 if (board[i][j].value !== "M" && board[i][j].revealed === true) {
                     non_mine_num++;
                 }
@@ -265,8 +265,8 @@ const Board = () => {
     }
 
     const indexBoundsCheck = (x, y) => {
-        const { grid_w, grid_l } = config[level];
-        let isInBound = (x >= 0 && x < grid_w && y >= 0 && y < grid_l);
+        const { grid_row, grid_col } = config[level];
+        let isInBound = (x >= 0 && x < grid_row && y >= 0 && y < grid_col);
         return isInBound;
     }
 
