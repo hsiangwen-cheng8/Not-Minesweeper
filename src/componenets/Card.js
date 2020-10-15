@@ -1,6 +1,11 @@
 import React, { useState } from "react";
 import { isMobile } from 'react-device-detect';
 
+// Note: I took ideas and geral framwork from this tutorial for minesweeper card: https://www.youtube.com/watch?v=BLdd0zP-tAw&ab_channel=EduRise
+// It has a public repository here: https://github.com/dhavaljardosh/minesweeper
+// That being said, I re-write most of the functionalities myself. 
+// However, essential logic like update the board when click on unreveal card... It will look very similar 
+// (I hope I don't get marks off for that since everyone will have similar implementation for essential part)
 export default function Card({ data, updateBoard, flagCard, incrementMoveCount, incrementFlagCount, decrementFlagCount }) {
   const [timer, setTimer] = useState(false);
   const [isLongPressing, setIsLongPressing] = useState(false);

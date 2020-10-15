@@ -3,6 +3,10 @@ import config from "../config";
 import Card from "./Card";
 import Timer from "./Timer"
 
+// Note: I took ideas and geral framwork from this tutorial for minesweeper board: https://www.youtube.com/watch?v=BLdd0zP-tAw&ab_channel=EduRise
+// It has a public repository here: https://github.com/dhavaljardosh/minesweeper
+// That being said, I re-write most of the functionalities myself. 
+// However, essential stuff like usestate for board, gameOver, minelocation... It will look very similar
 const Board = () => {
 
     const [board, setBoard] = useState([]);
